@@ -1,15 +1,21 @@
+# Название проекта
 name: zb-cailapub
+# Точка входа
+entryPoint:
+  - main.sc
 
-entryPoint: main.sc
-
-botEngine: v2
-language: ru
-
-tests:
-  include:
-    - test.xml
+# Параметры NLU-сервиса CAILA:
+botEngine: v2   # Версия диалогового движка
+language: ru    # Язык бота
 
 nlp:
-  intentNoMatchThresholds:
-    phrases: 0.2
-    patterns: 0.2
+    intentNoMatchThresholds:
+        phrases: 0.2
+        patterns: 0.2
+
+# Настройка прерывания слот-филлинга
+injector:
+    slotfilling:
+        maxSlotRetries: 2
+        stopOnAnyIntent: false
+        stopOnAnyIntentThreshold: 0.2
