@@ -94,6 +94,22 @@
       "prompts" : [ "Я загадал число. Твоя догадка?" ]
     } ],
     "priority" : 0
+  }, {
+    "path" : "/Число",
+    "enabled" : true,
+    "shared" : false,
+    "phrases" : [ ],
+    "classificationRules" : {
+      "refs" : [ ]
+    },
+    "patterns" : [ ],
+    "slots" : [ {
+      "name" : "Number",
+      "entity" : "duckling.number",
+      "required" : true,
+      "prompts" : [ ]
+    } ],
+    "priority" : 0
   } ],
   "entities" : [ {
     "entity" : {

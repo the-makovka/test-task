@@ -1,47 +1,36 @@
 require: slotfilling/slotFilling.sc
   module = sys.zb-common
-
+require: common.js
+    module = sys.zb-common
+    
 theme: /
+
     state: Правила
       intent: /Давай поиграем
-      a: Игра "Быки и коровы". Я загадаю 4-значное число, и ты должен попробовать отгадать его. Число не содержит повторяющихся цифр. Готов начать?
-      go!: /Правила/Согласен?
-      
-      state: Согласен?
-
-        state: Да
-            intent: /Согласие
-            go!: /Игра
-
-        state: Нет
-            intent: /Несогласие
-            a: Ну и ладно! Если передумаешь — скажи "давай поиграем"
+      a: Игра "Быки и коровы". Я загадаю 4-значное число, и ты должен попробовать угадать его. Число не содержит повторяющихся цифр. Готов начать?
+      go: /Игра
     
     state: Игра
       script:
-        $session.secretNumber = generateSecretNumber()
-        $session.attempts = 0
-        $reactions.say("Отлично! Я загадал число. Попробуй угадать.")
+        var secretNumber = generateSecretNumber()
+        session.set("secretNumber", secretNumber)
+        reactions.say("Отлично! Я загадал число. Попробуй угадать его.")
+        reactions.go("/Проверка")
     
     state: Проверка
       intent: /Число
       script:
-        val guess = $parseTree.number.joinToString("")
+        var guess = parseTree._Number.joinToString("")
+        
         if (guess.length != 4 || !guess.all { it.isDigit() }) {
-          $reactions.say("Пожалуйста, введите 4-значное число.")
-          return
-        }
-    
-        $session.attempts++
-        val secretNumber = $session.secretNumber
-        val bulls = countBulls(secretNumber, guess)
-        val cows = countCows(secretNumber, guess)
-    
-        if (bulls == 4) {
-          $reactions.say("Поздравляю, ты угадал число $secretNumber! Ты сделал $session.attempts попыток. Хочешь сыграть ещё?")
-          $reactions.go("/Правила/Давай поиграем")
+          reactions.say("Пожалуйста, введите 4-значное число.")
+          reactions.go("/Проверка")
         } else {
-          $reactions.say("Ты угадал $bulls бык(а) и $cows коров(у).")
+          var secretNumber = session.get("secretNumber") as String
+          var bulls = countBulls(secretNumber, guess)
+          var cows = countCows(secretNumber, guess)
+    
+          reactions.say("В числе $guess у тебя $bulls бык(а) и $cows коров(у). Попробуй ещё раз!")
         }
     
     state: NoMatch || noContext = true
